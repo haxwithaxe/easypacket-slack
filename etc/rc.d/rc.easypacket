@@ -1,0 +1,60 @@
+#!/bin/sh
+#
+# Start packetinit at bootup.
+
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
+PROG=/usr/bin/packetinit
+NAME=easypacket
+
+test -f $PROG || exit 0
+
+. /etc/easypacket/easypacket_lib
+
+easypacket_start(){
+	echo -n "Setting up the packet configurations: "
+	$PROG
+	echo "$NAME."
+	#haxwithaxe: wtf is this? # echo $(date) > /tmp/ept
+}
+
+easypacket_stop(){
+	echo -n "Stopping Soundmodem: "
+	killall_soundmodem
+	echo "Stopped."
+}
+
+easypacket_status(){
+	soundmodem_status
+}
+
+case "$1" in
+
+  "start")
+	easypacket_start
+    ;;
+
+  "stop")
+	easypacket_stop
+    ;;
+
+  "force-reload"|"restart")
+	easypacket_stop && easypacket_start
+    ;;
+
+  "status")
+	easypacket_status
+	;;
+
+  "config")
+	easypacket_config
+	;;
+
+  *)
+    echo "Usage: $0 {start|stop|restart|force-reload|status|config}"
+    exit 1
+    ;;
+
+esac
+
+exit 0
+

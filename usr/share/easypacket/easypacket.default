@@ -1,0 +1,16 @@
+# Configuration variables for easypacket, packet made easy
+
+# Call of the operator
+CALL='call'
+
+# Audio device name
+RADIOAUDIO='radioaudio'
+
+# IP por 1k2
+IP0='ip0'
+
+# IP por 4k8
+IP1='ip1'
+
+# IP por 9k6
+IP2='ip2'

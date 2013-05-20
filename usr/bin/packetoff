@@ -1,0 +1,16 @@
+#!/bin/sh
+# packetoff: Kill all soundmodem proceses, thus stop packet system
+# Part of easypacket, packet made easy
+#
+# Author: Pavel Milanes Costa, CO7WT, Cuban HAM Radio Station, FL11AJ
+# Email: co7wt@frcuba.co.cu, pavelmc@gmail.com
+#
+# Licence:
+# This scripts and his templates are licenced under GPL ver 2.0
+# Long live to Free Software
+#
+. /etc/easypacket/easypacket_lib
+
+get_sudo
+
+killall_soundmodem

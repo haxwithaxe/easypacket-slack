@@ -1,0 +1,42 @@
+#!/bin/bash
+# easypacket: Set the links for the packet sound card (OSS version)
+# Part of easypacket, packet made easy
+#
+# Author: Pavel Milanes Costa, CO7WT, Cuban HAM Radio Station, FL11AJ
+# Email: co7wt@frcuba.co.cu, pavelmc@gmail.com
+#
+# Licence:
+# This scripts and his templates are licenced under GPL ver 2.0
+# Long live to Free Software
+#
+# %VERSION%
+
+# Not realy start or stops anything, just detecting the sudio card 
+# and creating the links...
+
+# Sleep 10 sec to wait for all things
+#sleep 10
+
+. /etc/easypacket/easypacket_lib
+
+# Export the full PATH
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+# Select the devices
+RADIO=$(cat /proc/asound/cards | grep "$RADIOAUDIO" | cut -d " " -f 2)
+
+echo easypacket: Setting RADIO card: $RADIOAUDIO
+
+# Making the number 0, usually nothing=0. but we need the zero...
+ln /dev/dsp /dev/dsp0
+ln /dev/dsp$RADIO /dev/dsp_radio
+ln /dev/mixer /dev/mixer0
+ln /dev/mixer$RADIO /dev/mixer_radio
+
+# Setting the number of the sound card in a file for reference and
+# restoring the audio levels.
+
+echo $RADIO > $ax25_conf/radio_sound_device
+
+# Always return 0
+exit 0

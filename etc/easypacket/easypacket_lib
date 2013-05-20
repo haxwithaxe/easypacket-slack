@@ -1,0 +1,274 @@
+#!/bin/bash
+# easypacket.lib: function library
+# Part of easypacket: packet made easy
+#
+# Author: Pavel Milanes Costa, CO7WT, Cuban HAM Radio Station, FL11AJ
+# Email: co7wt@frcuba.co.cu, pavelmc@gmail.com, pavel@conas.co.cu
+# Edited by: haxwithaxe W3AXE
+#
+# Licence:
+# This scripts and his templates are licenced under GPL ver 2.0
+# Long live to Free Software
+#
+AX_IF='ax0'
+
+## Locations ##
+packetinit="/usr/bin/packetinit"
+save_audio="/usr/bin/save_audio"
+lang_dir="/etc/easypacket/lang"
+easypacket_conf="/etc/easypacket/easypacket.conf"
+easypacket_defaults="/usr/share/easypacket"
+ax25_conf="/etc/ax25"
+
+##### Defining functions
+get_lang(){
+	L="$(echo $LANG | cut -d "_" -f 1 )"
+	found=false
+	for l in `ls $lang_dir/*.lang | cut -d'/' -f 5 | cut -d'.' -f1` ;do
+		if [ "$L" = "$l" ] ;then
+			. $lang_dir/$l.lang
+			found=true
+			break
+		fi
+	done
+	if ! $found ;then . $lang/en.lang ;fi
+}
+
+# Objetive: Parse in a batch the soundmodem*conf templates
+function parse_config() {
+    # Waiting 4 parameters:
+    # 1 - CALL
+    # 2 - IP for 1200
+    # 3 - IP for 4800
+    # 4 - IP for 9600
+
+    ls $easypacket_deaults/soundmodem* | \
+    while read FILE ; do
+        # temp variables
+        T=$(cat $FILE | sed s/NOCALL/"$1"/g )
+        FINAL=$(echo $FILE | cut -d '/' -f 5)
+        echo "$MSG_PARSE $FINAL ..."
+        # Setting the IPs
+        T1=$(echo  $T | sed s/IP0/"$2"/g )
+        T2=$(echo $T1 | sed s/IP1/"$3"/g )
+        T3=$(echo $T2 | sed s/IP2/"$4"/g )
+        # Parsing BCAST of the diferent modes
+        IPBCAST0=$(echo $2 | cut -d "." -f -3).255
+        IPBCAST1=$(echo $3 | cut -d "." -f -3).255
+        IPBCAST2=$(echo $4 | cut -d "." -f -3).255
+        # Setting the BCAST
+        T4=$(echo $T3 | sed s/IPBCAST0/"$IPBCAST0"/g )
+        T5=$(echo $T4 | sed s/IPBCAST1/"$IPBCAST1"/g )
+        T6=$(echo $T5 | sed s/IPBCAST2/"$IPBCAST2"/g )
+        # Writing the final file
+        echo $T6 > $ax25_conf/$FINAL
+    done
+}
+
+# Listing the sound cards
+list_soundcards(){
+    cat /proc/asound/cards | grep ':' | grep -v UART > $CARDS
+    echo "$MSG_SND_CARDS"
+    echo -e "\n"
+    cat $CARDS
+    echo -e "\n"
+}
+
+# Verify I have a valid number...
+verify_card_num(){
+    cards=$1
+    card=$2
+    audio=$3
+    cat $cards | cut -d " " -f 2- | grep ^$card | cut -d ":" -f 2 | cut -d " " -f 2- > $audio
+    if [ -z "$(cat $audio)"  ] ; then
+        # Selection not valid
+        echo "$MSG_CARD_NOT_VALID"
+        return 1
+    else
+        return 0
+    fi 
+}
+
+# testing if OSS support
+has_oss(){
+    OSST=$(lsmod | grep snd_pcm_oss)
+    if [ "$OSST" ] ; then
+        # ok OSS
+        return 0
+    else
+        # only ALSA
+        return 1
+    fi
+}
+
+##########################################
+### Configuration files from templates ###
+##########################################
+backup_configs(){
+    echo "$MSG_ADV_BACKUP"
+    mkdir $ax25_conf/old 2> /dev/null
+    mv -f $ax25_conf/ax25d.conf $ax25_conf/old/ax25d.conf.$(date +%d%m%y_%H%M%S) 2> /dev/null 1> /dev/null
+    mv -f $ax25_conf/axports $ax25_conf/old/axports 2> /dev/null 1> /dev/null
+    mv -f $ax25_conf/soundmodem.conf $ax25_conf/old/soundmodem.conf 2> /dev/null 1> /dev/null
+    rm -f $ax25_conf/soundmodem*conf 2> /dev/null
+    rm $packetinit 2> /dev/null
+}
+
+generate_new_config(){
+    ## Building ax25d.conf...
+    echo "$MSG_B_AX25D"
+    sed s/XCALL/"$CALL"/g  $easypacket_deaults/ax25d.conf > $ax25_conf/ax25d.conf
+
+    ## Building axports...
+    echo "$MSG_B_AXPORTS"
+    sed s/NOCALL/"$CALL"/g $easypacket_deaults/axports > $ax25_conf/axports
+
+    sed s/call/"$CALL"/ $easypacket_deaults/easypacket.default | sed s/radioaudio/"$RADIO"/ | sed s/ip0/"$IP0"/ | sed s/ip1/"$IP1"/ | sed s/ip2/"$IP2"/ > $easypacket_conf
+
+    # IF OSS is active set the scripts...
+    if has_oss ; then
+        cp $easypacket_deaults/packetinit.oss $packetinit
+    else 
+        # IF no OSS, then ALSA...
+        cp $easypacket_deaults/packetinit.alsa $packetinit
+    fi
+}
+
+########################
+### Setting firewall ###
+########################
+
+iptables_setup(){
+    echo iptables_setup is fake atm
+}
+
+##################################
+### First run & reset firewall ###
+##################################
+
+first_run_init(){
+    $packetinit
+    save_audio
+}
+
+clean_up(){
+    rm -r $CLEANUP_FILES
+}
+
+am_i_root(){
+	if [[ "$(whoami)" == "root" ]] ;then
+		return 0
+	else
+		return 1
+	fi
+}
+
+get_sudo(){
+	if ! am_i_root ;then
+		ret=$?
+		echo $MSG_NOT_ROOT
+		exit $ret
+	fi
+}
+
+get_soundcard(){
+	# Getting the default soundcard for packet radio / default values
+	if [ -e $ax25_conf/radio_sound_device -a $easypacket_conf ]; then
+	    # ok, exist
+		NUM=$(cat $ax25_conf/radio_sound_device)
+	else 
+		# not exist
+	    echo $MSG_NOT_CONFIG
+		exit 1
+	fi
+}
+
+restore_audio_interface(){
+	# Restoring the controls of the selected audio interface
+	sudo alsactl restore $NUM -f $ax25_conf/radio_alsa.store
+}
+
+killall_soundmodem(){
+	# Sanity check: Kill all runnig soundmodems...
+	kill -1 `pidof soundmodem` 2> /dev/null
+	# wait 1 sec, needed on slow machines, 1 sec won't hurt anybody...
+	# WRONG !!! 1 sec is not ok, back to 3 sec...
+	sleep 3
+	# in case they don't die
+	kill -9 `pidof soundmodem` 2> /dev/null
+	sleep 3 # wait again
+}
+
+select_bitrate(){
+	# takes arg of bitrate
+	# Selecting the correct speed/mode
+	# Default: 4k8 & 9k6 at once as specified in $ax25_conf/soundmodem.conf
+	# note do NOT add 1k2 with 4k8 & 9k6 in the default soundmodem.conf
+	# the samplerate of the high modes prevail and 1k2 will not work (deaf)
+	CONFIG=$ax25_conf/soundmodem.conf
+	# 1k2
+	if [ "$1" = "1k2" ] ; then
+		CONFIG=$ax25_conf/soundmodem.1k2.conf
+	fi
+	# 4k8
+	if [ "$1" = "4k8" ] ; then
+		CONFIG=$ax25_conf/soundmodem.4k8.conf
+	fi
+	# 9k6
+	if [ "$1" = "9k6" ] ; then
+		CONFIG=$ax25_conf/soundmodem.9k6.conf
+	fi
+}
+
+start_soundmodem(){
+	# Starting soundmodem, letting the beast out of the cage... 
+	SM_LOG=$(mktemp)
+	CLEANUP_FILES="${CLEANUP_FILES} $SM_LOG"
+	soundmodem $CONFIG -sv0 > $SM_LOG &
+	# wait 3 sec, letting soundmodem start right...
+	sleep 3
+}
+
+
+soundmodem_status(){
+	ip addr show dev $AX_IF
+}
+
+verify_sondmodem_running(){
+	# Verify soundmodem has brought up the/any interface
+	# Tip... "Link encap:AMPR AX.25"; AMPR type...
+	VERIFY_LOG=$(mktemp)
+	CLEANUP_FILES="${CLEANUP_FILES} $VERIFY_LOG"
+	ifconfig | grep AMPR > $VERIFY_LOG
+	if test -s "$VERIFY_LOG" ; then
+		# Exist & non empty, all ok
+		echo "$MSG_READY"
+		echo $(cat $VERIFY_LOG | cut -d " " -f1,13)
+		mheardd 2> /dev/null
+		# option for start ax25spy or end with interface on
+		echo "$MSG_OK"
+	else
+		# Exist & empty, trouble here dude...
+		echo "$MSG_ERROR"
+		cat $SM_LOG
+		# Just in case...
+		killall_soundmodem
+	fi
+}
+
+save_audio_interface(){
+	# test for the needed files
+	if [ -e $ax25_conf/radio_sound_device -a /etc/default/easypacket ]; then
+		# ok, test for root privs
+		if [ $(am_i_root) ]; then
+		    # ok, root, making changes
+			alsactl store $(cat $ax25_conf/radio_sound_device) -f $ax25_conf/radio_alsa.store
+	    else
+		    # not root
+			echo $MSG_NOT_ROOT
+	    fi
+	else 
+		# not valid config
+	    echo $MSG_NOT_CONFIG
+	fi
+}

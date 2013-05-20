@@ -1,0 +1,47 @@
+#!/bin/bash
+# packetconfig: English Language config
+# Part of easypacket: packet made easy
+#
+# Author: Pavel Milanes Costa, CO7WT, Cuban HAM Radio Station, FL11AJ
+# Email: co7wt@frcuba.co.cu, pavelmc@gmail.com, pavel@conas.co.cu
+# Edited by: haxwithaxe W3AXE
+#
+# Licence:
+# This scripts and his templates are licenced under GPL ver 2.0
+# Long live to Free Software
+#
+MSG_PARSE="Parsing"
+MSG_PSE_CALL="Please type your CALL in UPPER CASE: "
+MSG_CALL_IS="Your CALL is: "
+MSG_ADV_SND='Next I will show you all the sound cards in the system it is recomended to use a SEPARATE sound card for packet work The main of the system may do it, but is not recomended.'
+MSG_SND_CARD="Your system has the following sound cards:"
+MSG_PSE_SOUND="Please type the number of the soundcard you want to use for packet work: "
+MSG_CARD_NOT_VALID="Your selection is not valid, restarting the script in 5 sec... or press Ctrl+C to terminate."
+MSG_YOUR_CARD="You have selected the following sound card for use by the packet system."
+MSG_ADV_IP='The AMPR has allocated the segment 44.xxx.xxx.xxx in TCP/IP networks for all hams, if you do not have a IP assigned please contact you local or country IP coordinator; or visit www.ampr.org and search for some one who can assign an IP to you. But, the segment 44.128.x.x is free for experimentation and is non routable mostly... GNU/Linux MUST assign a IP address to the divice, if you do not have an IP, or not want to use TCP/IP just use the proposeds IPs'
+MSG_READ_IP0="IP for 1200 bauds (type 44.128.0.1 if unshure): "
+MSG_READ_IP1="IP for 4800 bauds (type 44.128.1.1 if unshure): "
+MSG_READ_IP2="IP for 9600 bauds (type 44.128.2.1 if unshure): "
+MSG_ADV_YOUR_IP="You have selected the following IP addresses:"
+MSG_YOUR_IP0="ax0, 1200 bauds: "
+MSG_YOUR_IP1="ax1, 4800 bauds: "
+MSG_YOUR_IP2="ax2, 9600 bauds: "
+MSG_ADV_BACKUP="Making a backup of configuration files... ax25d.conf, axports, packetinit, firehol.conf and soundmodem.conf"
+MSG_B_AX25D="Build ax25.conf"
+MSG_B_AXPORTS="Build axports"
+MSG_ADV_FIREWALL='The packet channels are REALY not wideband, so we must make a rational use of it, we do not need to do everything over it, for this reason we have installed a firewall on your PC, to restrict the protocols over the radio packet channels.
+The restrictions are as following:
+* ALL the traffic in any ethernet (eth+), WiFi (wlan+) or Modem (ppp+) interfaces is allowed.
+* Your system can work this protocols over each interface, always from you PC to a server: 
+    ax0 1200 bauds: PING, SMTP and POP3
+    ax1 4800 bauds: PING, SMTP, POP3, HTTP and FTP
+    ax2 9600 bauds: PING, SMTP, POP3, HTTP, HTTP, FTP and SQUID PROXY
+* Any PC on the radio channel can only make PING to you, nothing else'
+MSG_READY="The following interfaces are ready to rock:"
+MSG_OK="Now you can let soundmodem run in the background and close the terminal; remember, you can watch the traffic with ax25spy or listen."
+MSG_ERROR='ERROR, the packet interface(s) are not up, please check it your self...
+Soundmodem said:
+---------------------------------------------------------'
+MSG_NOT_CONFIG="OOPS.. not valid configuration, you must run 'packetconfig' first."
+MSG_NOT_ROOT="Sorry, you must run this as root, may be using sudo..."
+

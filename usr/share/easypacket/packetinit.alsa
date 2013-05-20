@@ -1,0 +1,74 @@
+#!/bin/bash
+# easypacket: Set the links for the packet sound card (ALSA version)
+# Part of easypacket, packet made easy
+#
+# Author: Pavel Milanes Costa, CO7WT, Cuban HAM Radio Station, FL11AJ
+# Email: co7wt@frcuba.co.cu, pavelmc@gmail.com
+#
+# Licence:
+# This scripts and his templates are licenced under GPL ver 2.0
+# Long live to Free Software
+#
+# %VERSION%
+
+# Not realy start or stops anything, just detecting the sudio card 
+# and creating the links...
+
+. /etc/easypacket/easypacket_lib
+
+# Sleep 10 sec to wait for all things
+#sleep 10
+
+# Export the full PATH
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/X11R6/bin
+
+# Objetive: Parse in a batch the soundmodem*conf templates
+parse_config
+readonly -f parse_config
+
+# Select the devices
+RADIO=$(cat /proc/asound/cards | grep "$RADIOAUDIO" | cut -d " " -f 2)
+
+# building the alsa name
+cat /proc/asound/devices | grep "$RADIO-" | grep capture | cut -d '-' -f 2 | cut -d ']' -f 1 | cut -d ' ' -f 2 > /tmp/alsa_sub
+ALSA_RADIO=hw\:$RADIO\,$(cat /tmp/alsa_sub)
+
+echo easypacket: Setting RADIO card: $RADIOAUDIO \($ALSA_RADIO\)
+
+# Updating the soundmodem files to this config
+# load the default files, replace:
+# soundcard=alsa
+# /dev/dsp_radio=$ALSA_RADIO
+# but first parse it with parse_config
+
+parse_config $CALL $IP0 $IP1 $IP2
+
+cat $ax25_conf/soundmodem.conf | sed s/soundcard/alsa/ | sed s/"\/dev\/dsp_radio"/"$ALSA_RADIO"/ > /tmp/0
+cat $ax25_conf/soundmodem.1k2.conf | sed s/soundcard/alsa/ | sed s/"\/dev\/dsp_radio"/"$ALSA_RADIO"/ > /tmp/1
+cat $ax25_conf/soundmodem.4k8.conf | sed s/soundcard/alsa/ | sed s/"\/dev\/dsp_radio"/"$ALSA_RADIO"/ > /tmp/2
+cat $ax25_conf/soundmodem.9k6.conf | sed s/soundcard/alsa/ | sed s/"\/dev\/dsp_radio"/"$ALSA_RADIO"/ > /tmp/3
+
+# moviendo ficheros
+mv /tmp/0 $ax25_conf/soundmodem.conf
+mv /tmp/1 $ax25_conf/soundmodem.1k2.conf
+mv /tmp/2 $ax25_conf/soundmodem.4k8.conf
+mv /tmp/3 $ax25_conf/soundmodem.9k6.conf
+
+
+# Setting the number of the sound card in a file for reference and
+# restoring the audio levels.
+
+echo $RADIO > $ax25_conf/radio_sound_device
+
+# Always return 0
+exit 0
+
+
+
+
+
+
+
+
+
+

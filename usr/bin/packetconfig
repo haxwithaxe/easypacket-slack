@@ -1,0 +1,135 @@
+#!/bin/bash
+# packetconfig: Configure all things for you initialy
+# Part of easypacket: packet made easy
+#
+# Author: Pavel Milanes Costa, CO7WT, Cuban HAM Radio Station, FL11AJ
+# Email: co7wt@frcuba.co.cu, pavelmc@gmail.com, pavel@conas.co.cu
+#
+# Licence:
+# This scripts and his templates are licenced under GPL ver 2.0
+# Long live to Free Software
+#
+
+. /etc/easypacket/easypacket_lib
+
+#################
+### Language ####
+#################
+
+get_lang
+
+readonly -f parse_config
+
+############
+### Call ###
+############
+
+read -p "$MSG_PSE_CALL" CALL
+
+echo "$MSG_CALL_IS" $CALL
+
+##################
+### Sound Card ###
+##################
+
+## NOTE:
+# This script try to detect if OSS is running to use it, ALSA is assumed
+# to be, if OSS & ALSA are present the script go for OSS, because is more
+# easy managed (because of the interface handling) hence OSS is used by default
+# if no OSS device is detected, ALSA is used. 
+#
+# The ALSA detection is not bullet proff, so feel free to report any bugs 
+# and trouble to the author of the soft
+# 
+# Is always better to have a separate soundcard for the radio packet use, 
+# because the card in use by the OS may by unstable if you have a desktop
+# environment (it work rock solid on any server environment)
+# 
+# If OSS is detected and used, the script will create and update a file
+# /dev/dsp_radio as a hard link the the right /dev/dspX as the OS can switch
+# the numbers on bootup (ubuntu doit for shure from time to time)
+# The number of the right device is stored on boot up in /etc/ax25/dsp_radio
+#
+
+# init
+CARDS=$(mktemp)
+CARD=''
+AUDIO=$(mktemp)
+PCCARD=''
+PC=''
+CLEANUP_FILES="$AUDIO $CARDS" #for the cleanup function at the end
+
+# ADVICE:
+echo "$MSG_ADV_SND"
+
+# Listing the sound cards
+list_soundcards
+
+read -p "$MSG_PSE_SOUND" CARD
+# Verify I have a valid number...
+if (verify_soundcard $CARDS $CARD $AUDIO) ;then
+RADIO=$(cat $AUDIO)
+else
+	sleep 5
+	$0
+	exit 0
+fi
+
+# ADVICE About device
+echo -e "\n"
+echo -e "$MSG_YOUR_CARD"
+echo -e $(cat $AUDIO)
+echo -e "\n"
+
+# testing if OSS support
+if has_oss  ; then
+    # ok OSS
+    OSS="Y"
+else
+    # only ALSA
+    OSS="N"
+fi
+
+########################
+### IP for each mode ###
+########################
+echo "$MSG_ADV_IP"
+
+read -n 15 -p "$MSG_READ_IP0" IP0
+read -n 15 -p "$MSG_READ_IP1" IP1
+read -n 15 -p "$MSG_READ_IP2" IP2
+
+echo "$MSG_ADV_YOUR_IP"
+echo "$MSG_YOUR_IP0 $IP0"
+echo "$MSG_YOUR_IP1 $IP1"
+echo "$MSG_YOUR_IP2 $IP2"
+
+##########################################
+### Configuration files from templates ###
+##########################################
+if [ -d $ax25_conf ] ;then
+	backup_configs
+else
+	mkdir -p $ax25_conf
+fi
+
+generate_new_config
+
+########################
+### Setting firewall ###
+########################
+
+echo "$MSG_ADV_FIREWALL"
+
+iptables_setup
+
+##################################
+### First run & reset firewall ###
+##################################
+
+first_run_init
+
+clean_up
+
+exit 0
+

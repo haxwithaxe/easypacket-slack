@@ -1,0 +1,49 @@
+#!/bin/bash
+# packeton: Start soundmodem in the mode(s) specified(s), thus initializing the packet system
+# Part of easypacket, packet made easy
+#
+# Author: Pavel Milanes Costa, CO7WT, Cuban HAM Radio Station, FL11AJ
+# Email: co7wt@frcuba.co.cu, pavelmc@gmail.com
+#
+# Licence:
+# This scripts and his templates are licenced under GPL ver 2.0
+# Long live to Free Software
+#
+
+. /etc/easypacket/easypacket_lib
+
+#################
+### Language ####
+#################
+
+get_lang
+
+get_sudo
+
+# Getting the default soundcard for packet radio / default values
+get_soundcard
+
+# Restoring the controls of the selected audio interface
+restore_audio_interface
+
+# Sanity check: Kill all runnig soundmodems...
+killall_soundmodem
+
+# Selecting the correct speed/mode
+# Default: 4k8 & 9k6 at once as specified in /etc/ax25/soundmodem.conf
+# note do NOT add 1k2 with 4k8 & 9k6 in the default soundmodem.conf
+# the samplerate of the high modes prevail and 1k2 will not work (deaf)
+CONFIG=$ax25_conf/soundmodem.conf
+select_bitrate
+
+# Starting soundmodem, letting the beast out of the cage... 
+start_soundmodem
+
+# Verify soundmodem has bringed up the/any interface
+verify_soundmodem_running
+
+# END
+clean_up
+
+exit
+

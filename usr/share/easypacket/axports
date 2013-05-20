@@ -1,0 +1,9 @@
+# /etc/ax25/axports
+#
+# The format of this file is:
+#
+# name callsign speed paclen window description
+#
+1k2	NOCALL		19200	255	4	2m VHF (1200 baudios AFSK)
+4k8	NOCALL-1	19200	255	4	2m VHF (4800 baudios AFSK)
+9k6	NOCALL-2	19200	255	4	2m VHF (9600 baudios FSK)

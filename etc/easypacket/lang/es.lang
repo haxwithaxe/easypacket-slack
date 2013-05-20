@@ -1,0 +1,47 @@
+#!/bin/bash
+# es.lang: Spanish Language UI config
+# Part of easypacket: packet made easy
+#
+# Author: Pavel Milanes Costa, CO7WT, Cuban HAM Radio Station, FL11AJ
+# Email: co7wt@frcuba.co.cu, pavelmc@gmail.com, pavel@conas.co.cu
+# Edited by: haxwithaxe
+#
+# Licence:
+# This scripts and his templates are licenced under GPL ver 2.0
+# Long live to Free Software
+#
+
+MSG_PARSE="Procesando"
+MSG_PSE_CALL="Por favor escribe tu indicativo en MAYUSCULAS: "
+MSG_CALL_IS="Tu indicativo es: "
+MSG_ADV_SND='A continuación te enseñaré todas las tarjetas de sonido en el sistema es recomendable que uses una segunda tarjeta de sonido para el packet la que usa el sistema puede funcional, pero no está garantizada y no se recomienda'
+MSG_SND_CARD="Tu sistema tiene las siguientes tarjetas de sonido:"
+MSG_PSE_SOUND="Introduzca el número correspondiente a la tarjeta que deseas usar en packet: "
+MSG_CARD_NOT_VALID="Selección no válida, reiniciando el script en 5 segundos O puedes presionar Ctr+C para terminar"
+MSG_YOUR_CARD="Tu as seleccionado la siguiente tarjeta para usar en packet:"
+MSG_ADV_IP="La AMPR ha reservado el segmento 44.xxx.xxx.xxx de la red mundial de TCP/IP para todos los radio aficionados, si tu no tienes una ip asignada por favor contacta con tu coordinador local o nacional de AMPR o visita el sitio del AMPR (www.ampr.org) y busca quien te pueda ayudar con eso. Pero no te desanimes, el segmento 44.128.xxx.xxx se ha designado para pruebas experimentación, no es enrutable en las redes AMPR. GNU/Linux debe asignar una IP a cada interfaz, si no tienes puedes usar una de este segmento; si no estas seguro usa las IP que se sugieren"
+MSG_READ_IP0="IP para 1200 baudios (escribe 44.128.0.1 si no sabes): "
+MSG_READ_IP1="IP para 4800 baudios (escribe 44.128.1.1 si no sabes): "
+MSG_READ_IP2="IP para 9600 baudios (escribe 44.128.2.1 si no sabes): "
+MSG_ADV_YOUR_IP="Tu as seleccionado las siguientes direcciones IP:"
+MSG_YOUR_IP0="ax0, 1200 baudios: "
+MSG_YOUR_IP1="ax1, 4800 baudios: "
+MSG_YOUR_IP2="ax2, 9600 baudios: "
+MSG_ADV_BACKUP="Haciendo una salva de los ficheros de configuración... ax25d.conf, axports, packetinit, firehol.conf y soundmodem.conf"
+MSG_B_AX25D="Armando ax25.conf"
+MSG_B_AXPORTS="Armando axports"
+MSG_ADV_FIREWALL='Los canales de packet en TCP/IP son más bien un "Estrecho de Banda" por eso debemos hacer un uso racional de ellos, no necesitamos hacer de todo sobre estos por esa razón se instalará un firewall o cortafuegos en tu PC.
+Las restricciones implantadas son como sigue:
+* Todo el trafico de las interfaces cableadas (eth+), WiFi (wlan+) o Modems (ppp+) está permitido.
+* Desde tu PC se puede utilizar estos servicios en los canales de packet hacia otra PC:
+    ax0 1200 baudios: PING, SMTP y POP3
+    ax1 4800 baudios: PING, SMTP, POP3, HTTP y FTP
+    ax2 9600 baudios: PING, SMTP, POP3, HTTP, HTTP, FTP y SQUID PROXY
+* Cualquier Maquina en en canal de packet solo podrá hacerte ping, nada más'
+MSG_READY="Las interfaces siguientes estan listas para trabajar:"
+MSG_OK='Ahora puedes dejar a soundmodem trabajando en el fondo, incluso puedes cerrar la terminal; recuerda que puedes monitorear el tráfico con listen o ax25sp"'
+MSG_ERROR='ERROR, se ha detectado un error, la(s) interface(s) no esta(n) funcionando...
+Soundmodem dice:
+---------------------------------------------------------'
+MSG_NOT_CONFIG="OOPS... no se ha configurado, debes ejecutar 'packetconfig' primero."
+MSG_NOT_ROOT="Lo sentimos, debes ejecutar este comando como root, prueba con sudo..."

@@ -1,0 +1,131 @@
+#### ver 1.0b6 #### testing not for realease !!!
+Date: 22 jan 2012
+Author: Pavel Milanes Costa
+Changes:
+    Testing new way of initialization for packetinit, using default 
+    invoke-rc.d scripts to install the init script, sanity checks on scripts
+    more language customizations & update
+
+#### ver 1.0b5 ####
+Date: 19 jan 2012
+Author: Pavel Milanes Costa
+Changes:
+    Added internationalization routine for English and Spanish in the scripts
+    as well as spanish manuals.
+
+#### ver 1.0b4 #### testing not for realease !!!
+Date: 16 jan 2012
+Author: Pavel Milanes Costa
+Changes:
+    Removed the upstart job for ubuntu, as it have problems in some version
+    of ubuntu, switch to modifying rc.local... (NOT standard way, but work)
+    TODO: search the option in cron to start the script 1 minute after boot
+
+#### ver 1.0b3 ####
+Date: 15 jan 2012
+Author: Pavel Milanes Costa
+Changes:
+    More wrong /usr/local/bin locations, this time in the upstart job, 
+    modified the debian startup detection (timing)
+
+#### ver 1.0b2 ####
+Date: 14 jan 2012
+Author: Pavel Milanes Costa
+Changes:
+    Corrected some minor errors in packetconfig about wrong /usr/local/bin,
+    a condition with a syntax typo and a introduced delay in temp variable
+    naming...
+
+#### ver 1.0b1 ####
+Date: 14 jan 2012
+Author: Pavel Milanes Costa
+Changes:
+    Eliminated 1k2 from soundmodem.conf, the samplerate of 4k8 and 9k6 makes
+    impisible to 1k2 rx anything, as a result 1k2 will be deaf
+
+#### ver 1.0b ####
+Date: 14 jan 2012
+Author: Pavel Milanes Costa
+Changes:
+    Fisrt deb release, lintian compilant, completed manuals, general review
+
+#### ver 1.0a ####
+Date: 10 jan 2012
+Author: Pavel Milanes Costa
+Changes:
+    So many to count... for testing not to release...
+    Enhanced sound detection, included debian startup detection (rc.local)
+    Activated auto activation of firehol, lintian review for deb packaging
+    Included manuals, changelog, TODO, Thanks, etc....
+    first deb packaging
+
+#### ver 0.6.4 ####
+Date: 3 jan 2012
+Author: Pavel Milanes Costa
+Changes:
+    Bug with a pair of () not scaped in an echo statement
+
+#### ver 0.6.3 ####
+Date: 3 jan 2012
+Author: Pavel Milanes Costa
+Changes:
+    Pin Ponted and fixed some errors in ubuntu with sh vs bash as interpreter
+    All sed statements with variables are safe "escaped" due to ilegal chars in
+    the name of some cards (-, ' and *)
+    Detected a possible run condition when the OS have two audio cards with the
+    same name aka. chipset, hence same name... <--- TODO
+
+#### ver 0.6.1 #### beta (some minors bugs as 0.6.2...)
+Date: 2 jan 2012
+Author: Pavel Milanes Costa
+Changes:
+    Included full ALSA support for soundmodem configuration, improved interface
+    BETA
+
+#### ver 0.6.0 #### ALPHA branch !!!
+Date: 30 dec 2011
+Author: Pavel Milanes Costa
+Changes:
+    Simplified audio detection and testing a new way to setup the system using only alsa.
+    Testing version minimal functionality...
+
+#### ver 0.5.2 #### 
+Date: 19 dec 2011
+Author: Pavel Milanes Costa
+Changes:
+    Detected a error on the firehol route rules about long route names thanks to
+    CO7KD for pointing this, improved audio subsystem detection...
+
+#### ver 0.4.x #### ALPHA branch !!!
+Date: 10 may 2011 - 28 june 2011
+Author: Pavel Milanes Costa
+Changes:
+    Testing better detection of audio sub-system and identification
+    (ALSA vs. OSS isuaes in debian/ubuntu)
+
+#### ver 0.3.1 ####
+Date: 10 may 2011
+Author: Pavel Milanes Costa
+Changes:
+    'Internationalization', moved all the comments to english for publish the 
+    scripts in ubuntu-ham email reflector and ask for testing/advice/suggestions.
+
+#### ver 0.3 ####
+Date: 09 may 2011
+Author: Pavel Milanes Costa
+Changes:
+    Working now in multimode simultaneous as in single modes independently.
+
+#### ver 0.2 ####
+Date: 01 may 2011
+Author: Pavel Milanes Costa
+Changes:
+    First working script, only all modems, configuration of independent modems
+    planned, created structure of files in /usr, making changelog, LEEME, README...
+
+#### ver 0.1 ####
+Date: 12 april 2011
+Author: Pavel Milanes Costa
+Changes:
+    Initial ideas, making the skeleton of the steps, not usable yet
+
